@@ -2,7 +2,8 @@
 
 MangaExtractor is a python script that will allow the user to extract manga volumes/chapters.
 
-## Installation - Prerequisites
+## **Installation - Prerequisites**
+-----------------------------------
 
 You will have to first download Python 3.7.3 or earlier from https://www.python.org/downloads/
 
@@ -52,7 +53,8 @@ To learn more about pip you can visit these helpful links:
 - https://pipenv.kennethreitz.org/en/latest/cli/
 - https://pipenv.pypa.io/en/latest/
 
-## Usage - Runing the script
+## **Usage - Running the script**
+---------------------------------
 
 Once all the dependencies have been downloaded then you will now be able to run the following command to start the script:
 
