@@ -4,8 +4,6 @@ MangaExtractor is a python script that will allow the user to extract manga volu
 
 ## **Installation - Prerequisites**
 
----
-
 You will have to first download Python 3.7.3 or earlier from https://www.python.org/downloads/
 
 You will also need to download a few python dependencies before running the script for the first time. I would suggest installing these dependencies in a virtual environment. I will be using pipenv, you can install pipenv by doing the following:
@@ -64,8 +62,6 @@ To learn more about pip you can visit these helpful links:
 - https://pipenv.pypa.io/en/latest/
 
 ## **Usage - Running the script**
-
----
 
 Once all the dependencies have been downloaded then you will now be able to run the following command to start the script:
 
