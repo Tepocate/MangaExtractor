@@ -30,7 +30,6 @@ class web_scrape:
                 initial_page += 1
                 page_counter += 1
             index += 1
-        print(f'global index = {index}')
 
 
     def get_page(self,url):
