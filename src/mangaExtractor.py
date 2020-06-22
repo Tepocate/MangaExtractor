@@ -79,25 +79,20 @@ class web_scrape:
         chapter_df.index = chapter_df.index + 1
 
         return chapter_df
-
-
-if __name__ == '__main__':
     
-    manga_name = input('''What is the name of the excel sheet you have created that 
-                        contains the columns currentVol|startChapter|endChapter in 
-                        that order: 
-                        ''')# A valid response would be: My Hero Academia
+def ask():
+    manga_name = input("What is the name of the excel sheet you have created that "\
+                       "contains the columns currentVol|startChapter|endChapter in "\
+                       "that order: ")# A valid response would be: My Hero Academia
 
-    xlsx = input(f'''What is the name of the excel workbook file in {os.getcwd()}, 
-                    include the file extension in the name: 
-                    ''') # A valid input would be: MangaVolumes.xlsx
-
+    xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
+                  "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
+    
+    url_manga_name = input("What is the name with of the manga you want to download "\
+                           "form https://mangaseeonline.us/directory/ make sure you "\
+                           "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
     df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
     
-    url_manga_name = input('''What is the name with of the manga you want to download 
-                            form https://mangaseeonline.us/directory/ make sure you 
-                            include a - between every word: ''') # A valid answer would be: Boku-No-Hero-Academia
-
     print("Extracting volumes now")
     i=0
     while i < len(df):
@@ -109,6 +104,11 @@ if __name__ == '__main__':
         i += 1
     print(f"Finish Extracting.\nYour volumes are located: {os.getcwd()}/volumes")
 
+
+
+if __name__ == '__main__':
+    
+    
 
 
 
