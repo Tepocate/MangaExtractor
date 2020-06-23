@@ -94,7 +94,7 @@ def ask():
     
     print("Extracting volumes now")
     i=0
-    while i < len(df):
+    while i < (len(df)-1):
         current_vol = df.loc[i,'currentVol']
         end_chapter = df.loc[i+1,'startChapter']
         my_hero = web_scrape(manga_name, url_manga_name, current_vol, end_chapter)
