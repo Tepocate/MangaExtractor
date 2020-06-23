@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import pandas as pd
 import os
+import shutil
 
 index = 1
 class web_scrape:
@@ -29,6 +30,7 @@ class web_scrape:
                 initial_page += 1
                 page_counter += 1
             index += 1
+        self.archive()
 
 
     def get_page(self,url):
@@ -78,36 +80,46 @@ class web_scrape:
 
         return chapter_df
     
+    def archive(self):
+        print("Archiving files to cbr")
+        path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
+        shutil.make_archive(path, 'zip', path)
+
+        os.rename(f'{path}.zip',f'{path}.cbr')
+        print(f"cbr located {path}.cbr")
+        shutil.rmtree(f'{path}')
+
 def ask():
     manga_name = input("What is the name of the excel sheet you have created that "\
-                       "contains the columns currentVol|startChapter|endChapter in "\
-                       "that order: ")# A valid response would be: My Hero Academia
+                        "contains the columns currentVol|startChapter|endChapter in "\
+                        "that order: ")# A valid response would be: My Hero Academia
 
     xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-                  "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
+                    "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
     
     url_manga_name = input("What is the name with of the manga you want to download "\
-                           "form https://mangaseeonline.us/directory/ make sure you "\
-                           "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
+                            "form https://mangaseeonline.us/directory/ make sure you "\
+                            "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
     df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
-    
+
     print("Extracting volumes now")
     i=0
-    while i < (len(df)-1):
+    while i < (len(df):
         current_vol = df.loc[i,'currentVol']
-        end_chapter = df.loc[i+1,'startChapter']
+        end_chapter = df.loc[i,'endChapters'] + 1
+        print(f'{end_chapter}')
         my_hero = web_scrape(manga_name, url_manga_name, current_vol, end_chapter)
         my_hero.vol_scrape()
 
         i += 1
     print(f"Finish Extracting.\nYour volumes are located: {os.getcwd()}/volumes")
 
+def zip_archieve():
+    shutil.make_archive('~/Desktop/zipfile', 'zip', '~/Documents/')
+
+    
+
 
 
 if __name__ == '__main__':
     ask()
-    
-    
-
-
-
