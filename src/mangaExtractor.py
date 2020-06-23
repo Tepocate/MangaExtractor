@@ -11,7 +11,6 @@ class web_scrape:
         self.url_manga_name =url_manga_name
         self.manga_name = manga_name
         self.vol = current_vol
-        #self.current_chapter = start_chapter
         self.last_chapter = end_chapter
 
     def vol_scrape(self):
