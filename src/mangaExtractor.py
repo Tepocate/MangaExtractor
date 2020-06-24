@@ -104,7 +104,7 @@ def ask():
 
     print("Extracting volumes now")
     i=0
-    while i < (len(df):
+    while i < len(df):
         current_vol = df.loc[i,'currentVol']
         end_chapter = df.loc[i,'endChapters'] + 1
         print(f'{end_chapter}')
