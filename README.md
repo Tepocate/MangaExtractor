@@ -99,7 +99,7 @@ This is basically asking for the file name you must include the file extension w
 The 3rd and last question asked is:
 
 ```
-What is the name with of the manga you want to download form https://mangaseeonline.us/directory/ make sure you include a - between every word:
+What is the name with of the manga you want to download form https://mangasee123.com/directory/ make sure you include a - between every word:
 ```
 
 So basically you will have to get the name of the manage you want and enter it exactly how you see.
@@ -113,7 +113,7 @@ tepocate:{~}$ cd projects/mangaExtractor/src/
 tepocate:{~/projects/mangaExtractor/src}$ pipenv run python mangaExtractor.py
 What is the name of the excel sheet you have created that contains the columns currentVol|startChapter|endChapter in that order: Onepunch Man
 What is the name of the excel workbook file in /home/tepocate/projects/mangaExtractor/src, include the file extension in the name: MangaVolumes.xlsx
-What is the name with of the manga you want to download form https://mangaseeonline.us/directory/ make sure you include a - between every word: Onepunch-Man
+What is the name with of the manga you want to download form https://mangasee123.com/directory/ make sure you include a - between every word: Onepunch-Man
 Extracting volumes now
 Volume 1 page 0 extracted
 Volume 1 page 1 extracted
@@ -137,7 +137,7 @@ PS C:\Users\Christian> cd 'A:\Shared Folder\src\'
 PS A:\Shared Folder\src> pipenv run python .\mangaExtractor.py
 What is the name of the excel sheet you have created that contains the columns currentVol|startChapter|endChapter in that order: My Hero Academia
 What is the name of the excel workbook file in A:\Shared Folder\src, include the file extension in the name: MangaVolumes.xlsx
-What is the name with of the manga you want to download form https://mangaseeonline.us/directory/ make sure you include a - between every word: Boku-No-Hero-Academia
+What is the name with of the manga you want to download form https://mangasee123.com/directory/ make sure you include a - between every word: Boku-No-Hero-Academia
 Extracting volumes now
 Volume 1 page 0 extracted
 Volume 1 page 1 extracted
