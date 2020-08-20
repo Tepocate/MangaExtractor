@@ -5,36 +5,45 @@ import pandas as pd
 import os
 import shutil
 
-index = 1
+# index = 1
 class web_scrape:
-    def __init__(self,manga_name,url_manga_name,current_vol, end_chapter):
+    def __init__(self,manga_name,url_manga_name,current_vol, start_chapter, end_chapter):
         self.manga_name = manga_name
         self.url_manga_name = url_manga_name
         self.manga_name = manga_name
         self.vol = current_vol
-        self.last_chapter = end_chapter
-        self.info = self.get_info(f'https://mangasee123.com/read-online/{self.url_manga_name}-chapter-1-page-1.html')
+        self.start_chapter = start_chapter
+        self.end_chapter = end_chapter
+        self.info = self.get_info(f'https://mangasee123.com/read-online/{self.url_manga_name}-chapter-{self.start_chapter}-page-1.html')
 
     def vol_scrape(self):
         page_counter = 0
-        global index
+        index = 0
         vol_df = self.info[0]
-        while (int(vol_df.loc[index]['Chapter'])-100000)/10 < self.last_chapter:
-            current_chapter = (int(vol_df.loc[index]['Chapter'])-100000)/10
-            current_page = int(vol_df.loc[index]['Page'])
-            initial_page = 1 
-            while initial_page < (current_page + 1):
-                if current_chapter.is_integer():
-                    initial_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{int(current_chapter):04d}-{initial_page:03d}.png"
-                else: 
-                    initial_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{initial_page:03d}.png"
-                print(f"page url = {initial_page_url}") # Testing
-                self.save_page(initial_page_url,page_counter)
+        # vol_df.set_index('Chapter').loc[(self.start_chapter * 10)+100000]
+        #while (int(vol_df.loc[index]['Chapter'])-100000)/10 < self.end_chapter:
+        first_chapter = ((self.start_chapter + index) * 10)+100000
+        last_chapter = (self.end_chapter * 10) + 100000
+        
+        while first_chapter <= last_chapter:
+            # current_chapter = (int(vol_df.loc[index]['Chapter'])-100000)/10
+            # current_chapter = (self.start_chapter * 10)+100000
+            # current_page = int(vol_df.loc[index]['Page'])
+            first_page = 1
+            last_page = vol_df.loc[(self.start_chapter*10)+100000]['Page']
+            while first_page <= last_page:
+                # if current_chapter.is_integer():
+                #     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{int(current_chapter):04d}-{first_page:03d}.png"
+                first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{first_chapter-102025:04d}-{first_page:03d}.png"
+                # else: 
+                #     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{first_page:03d}.png"
+                self.save_page(first_page_url,page_counter)
                 print(f"Volume {self.vol} page {page_counter} extracted")
 
-                initial_page += 1
+                first_page += 1
                 page_counter += 1
             index += 1
+            first_chapter = ((self.start_chapter + index) * 10)+100000
         self.archive()
 
 
@@ -71,30 +80,13 @@ class web_scrape:
 
         png_path = scripts[14].string.split('\r\n\t\t\t')[6].split(';')[0].split('=')[1].strip().split('"')[1]
 
-<<<<<<< HEAD
         df = pd.DataFrame(json_chapter)
         df = df.drop(columns=['Directory','ChapterName','Date','Type'])
-        df.index = df.index + 1
+        df = df.astype(str).astype(int).set_index('Chapter')
+        #df.index = df.index + 1
 
         return df, png_path
 
-
-
-def ask():
-    # enable after testing
-    # manga_name = input("What is the name of the excel sheet you have created that "\
-    #                     "contains the columns currentVol|startChapter|endChapter in "\
-    #                     "that order: ")# A valid response would be: My Hero Academia
-
-    # xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-    #                 "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
-
-    # url_manga_name = input("What is the name with of the manga you want to download "\
-    #                         "form https://mangasee123.com/directory/ make sure you "\
-    #                         "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
-=======
-        return chapter_df
-    
     def archive(self):
         print("Archiving files to cbr")
         path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
@@ -104,32 +96,31 @@ def ask():
         print(f"cbr located {path}.cbr")
         shutil.rmtree(f'{path}')
 
+
 def ask():
-    manga_name = input("What is the name of the excel sheet you have created that "\
-                        "contains the columns currentVol|startChapter|endChapter in "\
-                        "that order: ")# A valid response would be: My Hero Academia
+    # manga_name = input("What is the name of the excel sheet you have created that "\
+    #                     "contains the columns currentVol|startChapter|endChapter in "\
+    #                     "that order: ")# A valid response would be: My Hero Academia
 
-    xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-                    "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
+    # xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
+    #                 "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
     
-    url_manga_name = input("What is the name with of the manga you want to download "\
-                            "form https://mangaseeonline.us/directory/ make sure you "\
-                            "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
-    df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
->>>>>>> 8b2ff073d91b65899f6ce22da80a59263286bc22
+    # url_manga_name = input("What is the name with of the manga you want to download "\
+    #                         "form https://mangasee123.com/directory/ make sure you "\
+    #                         "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
 
-    manga_name = 'Onepunch Man'
+    manga_name = 'My Hero Academia'
     xlsx = 'MangaVolumes.xlsx'
-    url_manga_name = 'Onepunch-Man'
+    url_manga_name = 'Boku-No-Hero-Academia'
 
     df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
-    # print("Extracting volumes now")
+
     i=0
     while i < len(df):
         current_vol = df.loc[i,'currentVol']
-        end_chapter = df.loc[i,'endChapters'] + 1
-        print(f'{end_chapter}')
-        my_hero = web_scrape(manga_name, url_manga_name, current_vol, end_chapter)
+        start_chapter = df.loc[i,'startChapter']
+        end_chapter = df.loc[i,'endChapter'] + 1
+        my_hero = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
         my_hero.vol_scrape()
 
         i += 1
@@ -144,9 +135,3 @@ def zip_archieve():
 if __name__ == '__main__':
     ask()
 
-
-
-
-
-if __name__ == '__main__':
-    ask()
