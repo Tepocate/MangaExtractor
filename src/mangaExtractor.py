@@ -5,7 +5,7 @@ import pandas as pd
 import os
 import shutil
 
-# index = 1
+
 class web_scrape:
     def __init__(self,manga_name,url_manga_name,current_vol, start_chapter, end_chapter):
         self.manga_name = manga_name
@@ -20,23 +20,15 @@ class web_scrape:
         page_counter = 0
         index = 0
         vol_df = self.info[0]
-        # vol_df.set_index('Chapter').loc[(self.start_chapter * 10)+100000]
-        #while (int(vol_df.loc[index]['Chapter'])-100000)/10 < self.end_chapter:
+
         first_chapter = ((self.start_chapter + index) * 10)+100000
         last_chapter = (self.end_chapter * 10) + 100000
         
         while first_chapter <= last_chapter:
-            # current_chapter = (int(vol_df.loc[index]['Chapter'])-100000)/10
-            # current_chapter = (self.start_chapter * 10)+100000
-            # current_page = int(vol_df.loc[index]['Page'])
             first_page = 1
             last_page = vol_df.loc[(self.start_chapter*10)+100000]['Page']
             while first_page <= last_page:
-                # if current_chapter.is_integer():
-                #     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{int(current_chapter):04d}-{first_page:03d}.png"
                 first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{first_chapter-102025:04d}-{first_page:03d}.png"
-                # else: 
-                #     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{first_page:03d}.png"
                 self.save_page(first_page_url,page_counter)
                 print(f"Volume {self.vol} page {page_counter} extracted")
 
@@ -46,13 +38,11 @@ class web_scrape:
             first_chapter = ((self.start_chapter + index) * 10)+100000
         self.archive()
 
-
     def get_page(self,url):
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
         page = requests.get(url, headers=headers)
 
         return page
-
 
     def save_page(self,png_url,page_counter):
         page = self.get_page(png_url)
@@ -67,7 +57,6 @@ class web_scrape:
         file.write(page.content)
         
         file.close()
-
 
     def get_info(self, site):
 
@@ -98,20 +87,16 @@ class web_scrape:
 
 
 def ask():
-    # manga_name = input("What is the name of the excel sheet you have created that "\
-    #                     "contains the columns currentVol|startChapter|endChapter in "\
-    #                     "that order: ")# A valid response would be: My Hero Academia
+    manga_name = input("What is the name of the excel sheet you have created that "\
+                        "contains the columns currentVol|startChapter|endChapter in "\
+                        "that order: ")# A valid response would be: My Hero Academia
 
-    # xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-    #                 "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
+    xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
+                    "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
     
-    # url_manga_name = input("What is the name with of the manga you want to download "\
-    #                         "form https://mangasee123.com/directory/ make sure you "\
-    #                         "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
-
-    manga_name = 'My Hero Academia'
-    xlsx = 'MangaVolumes.xlsx'
-    url_manga_name = 'Boku-No-Hero-Academia'
+    url_manga_name = input("What is the name with of the manga you want to download "\
+                            "form https://mangasee123.com/directory/ make sure you "\
+                            "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
 
     df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
 
@@ -127,10 +112,6 @@ def ask():
 
     print(f"Finish Extracting.\nYour volumes are located: {os.getcwd()}/volumes")
 
-def zip_archieve():
-    shutil.make_archive('~/Desktop/zipfile', 'zip', '~/Documents/')
-
-    
 
 if __name__ == '__main__':
     ask()
