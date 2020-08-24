@@ -26,9 +26,9 @@ class web_scrape:
         
         while first_chapter <= last_chapter:
             first_page = 1
-            last_page = vol_df.loc[(self.start_chapter*10)+100000]['Page']
+            last_page = vol_df.loc[((self.start_chapter + index)*10)+100000]['Page']
             while first_page <= last_page:
-                first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{first_chapter-102025:04d}-{first_page:03d}.png"
+                first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{self.start_chapter + index:04d}-{first_page:03d}.png"
                 self.save_page(first_page_url,page_counter)
                 print(f"Volume {self.vol} page {page_counter} extracted")
 
@@ -87,16 +87,23 @@ class web_scrape:
 
 
 def ask():
-    manga_name = input("What is the name of the excel sheet you have created that "\
-                        "contains the columns currentVol|startChapter|endChapter in "\
-                        "that order: ")# A valid response would be: My Hero Academia
+    # manga_name = input("What is the name of the excel sheet you have created that "\
+    #                     "contains the columns currentVol|startChapter|endChapter in "\
+    #                     "that order: ")# A valid response would be: My Hero Academia
 
-    xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-                    "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
+    # xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
+    #                 "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
     
-    url_manga_name = input("What is the name with of the manga you want to download "\
-                            "form https://mangasee123.com/directory/ make sure you "\
-                            "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
+    # url_manga_name = input("What is the name with of the manga you want to download "\
+    #                         "form https://mangasee123.com/directory/ make sure you "\
+    #                         "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
+
+    manga_name = 'My Hero Academia' # testing
+
+    xlsx = 'MangaVolumes.xlsx' # testing
+    
+    url_manga_name = 'Boku-No-Hero-Academia' # testing
+    
 
     df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
 
@@ -104,7 +111,7 @@ def ask():
     while i < len(df):
         current_vol = df.loc[i,'currentVol']
         start_chapter = df.loc[i,'startChapter']
-        end_chapter = df.loc[i,'endChapter'] + 1
+        end_chapter = df.loc[i,'endChapter']
         my_hero = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
         my_hero.vol_scrape()
 
