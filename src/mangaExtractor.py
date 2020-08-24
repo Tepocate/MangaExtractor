@@ -87,22 +87,16 @@ class web_scrape:
 
 
 def ask():
-    # manga_name = input("What is the name of the excel sheet you have created that "\
-    #                     "contains the columns currentVol|startChapter|endChapter in "\
-    #                     "that order: ")# A valid response would be: My Hero Academia
+    manga_name = input("What is the name of the excel sheet you have created that "\
+                        "contains the columns currentVol|startChapter|endChapter in "\
+                        "that order: ")# A valid response would be: My Hero Academia
 
-    # xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-    #                 "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
+    xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
+                    "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
     
-    # url_manga_name = input("What is the name with of the manga you want to download "\
-    #                         "form https://mangasee123.com/directory/ make sure you "\
-    #                         "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
-
-    manga_name = 'My Hero Academia' # testing
-
-    xlsx = 'MangaVolumes.xlsx' # testing
-    
-    url_manga_name = 'Boku-No-Hero-Academia' # testing
+    url_manga_name = input("What is the name with of the manga you want to download "\
+                            "form https://mangasee123.com/directory/ make sure you "\
+                            "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
     
 
     df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
