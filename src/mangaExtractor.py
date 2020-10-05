@@ -4,13 +4,13 @@ import json
 import pandas as pd
 import os
 import shutil
+import re
 
 
 class web_scrape:
-    def __init__(self,manga_name,url_manga_name,current_vol, start_chapter, end_chapter):
+    def __init__(self, manga_name, url_manga_name, current_vol, start_chapter, end_chapter):
         self.manga_name = manga_name
         self.url_manga_name = url_manga_name
-        self.manga_name = manga_name
         self.vol = current_vol
         self.start_chapter = start_chapter
         self.end_chapter = end_chapter
@@ -21,31 +21,30 @@ class web_scrape:
         index = 0
         vol_df = self.info[0]
 
-        first_chapter = ((self.start_chapter + index) * 10)+100000
+        first_chapter = (self.start_chapter * 10) + 100000
         last_chapter = (self.end_chapter * 10) + 100000
-        
-        while first_chapter <= last_chapter:
-            first_page = 1
-            last_page = vol_df.loc[((self.start_chapter + index)*10)+100000]['Page']
-            while first_page <= last_page:
-                first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{self.start_chapter + index:04d}-{first_page:03d}.png"
-                self.save_page(first_page_url,page_counter)
-                print(f"Volume {self.vol} page {page_counter} extracted")
 
+        chapter_df = vol_df[vol_df['Chapter'].between(first_chapter,last_chapter)]
+
+        for i in chapter_df.index:
+            first_page = 1
+            last_page = chapter_df['Page'][i] # Last page for the current chapter i
+            current_chapter = (chapter_df['Chapter'][i] - 100000)/10 # Does math to get the num of current chapter
+            while first_page <= last_page:
+                if current_chapter.is_integer():
+                    first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:04.0f}-{first_page:03d}.png"
+                else:
+                    first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{first_page:03d}.png"
+                self.save_page(first_page_url,page_counter)
+                print(f"Volume: {self.vol} Chapter: {current_chapter} Page {page_counter} extracted")
                 first_page += 1
                 page_counter += 1
-            index += 1
-            first_chapter = ((self.start_chapter + index) * 10)+100000
         self.archive()
 
-    def get_page(self,url):
+    # Save the pages into volume folder
+    def save_page(self, png_url,page_counter):
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
-        page = requests.get(url, headers=headers)
-
-        return page
-
-    def save_page(self,png_url,page_counter):
-        page = self.get_page(png_url)
+        page = requests.get(png_url, headers=headers)
         
         try:
             path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
@@ -58,24 +57,26 @@ class web_scrape:
         
         file.close()
 
+    # Scrape the info needed form the page
     def get_info(self, site):
+        headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
+        page = requests.get(site, headers=headers)
 
-        page = self.get_page(site)
         soup = BeautifulSoup(page.content, 'html.parser')
 
         scripts = soup.find_all('script')
 
-        json_chapter = json.loads(scripts[14].string.split('\r\n\t\t\t')[7].split(';')[0].split('=')[1])
+        json_chapter = json.loads(scripts[15].string.split('\r\n\t\t\t')[7].split(';')[0].split('=')[1])
 
-        png_path = scripts[14].string.split('\r\n\t\t\t')[6].split(';')[0].split('=')[1].strip().split('"')[1]
+        png_path = scripts[15].string.split('\r\n\t\t\t')[6].split(';')[0].split('=')[1].strip().split('"')[1]
 
         df = pd.DataFrame(json_chapter)
         df = df.drop(columns=['Directory','ChapterName','Date','Type'])
-        df = df.astype(str).astype(int).set_index('Chapter')
-        #df.index = df.index + 1
+        df = df.astype(str).astype(int)
 
         return df, png_path
 
+    # zip up to a cbr archive
     def archive(self):
         print("Archiving files to cbr")
         path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
@@ -85,33 +86,51 @@ class web_scrape:
         print(f"cbr located {path}.cbr")
         shutil.rmtree(f'{path}')
 
-
+# Asking the questions to get the detials of what manga you are trying to extract
 def ask():
     manga_name = input("What is the name of the excel sheet you have created that "\
                         "contains the columns currentVol|startChapter|endChapter in "\
                         "that order: ")# A valid response would be: My Hero Academia
-
-    xlsx = input(f"What is the name of the excel workbook file in {os.getcwd()}, "\
-                    "include the file extension in the name: ") # A valid input would be: MangaVolumes.xlsx
     
     url_manga_name = input("What is the name with of the manga you want to download "\
                             "form https://mangasee123.com/directory/ make sure you "\
                             "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
-    
 
-    df = pd.read_excel (f'{os.getcwd()}/{xlsx}',sheet_name= manga_name,dtype=object) 
+    single_multiple = input('Will you be dowloand:\n(1)A single chapter\n(2)Mutliple volumes\nEnter 1 or 2: ')
+    if single_multiple == '2':
+        volumes = input('What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8] : ')
+        volumes_list = re.split('\[|\]|,',volumes)
+        while ("" in volumes_list): volumes_list.remove("")
+        # OUTPUT: ['1', '2', '3', '4', '5', '6', '7', '8']
 
-    i=0
-    while i < len(df):
-        current_vol = df.loc[i,'currentVol']
-        start_chapter = df.loc[i,'startChapter']
-        end_chapter = df.loc[i,'endChapter']
-        my_hero = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
-        my_hero.vol_scrape()
+        chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71] :')
+        Chapters_list = re.split('\[|\]|,',Chapters)
+        while("" in Chapters_list): Chapters_list.remove("")
+        # OUTPUT: ['1-7', '8-17', '18-26', '27-35', '36-44', '45-53', '54-62', '63-71']
 
-        i += 1
+        if len(Chapters_list) == len(volumes_list):
+            i=0
+            while i < len(volumes_list):
+                current_vol = volumes[i]
+                start_chapter = Chapters_list[i].split('-')[0]
+                end_chapter = Chapters_list[i].split('-')[1]
+                manga = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
+                manga.vol_scrape()
 
-    print(f"Finish Extracting.\nYour volumes are located: {os.getcwd()}/volumes")
+                i += 1
+
+            print(f"Finish Extracting.\nYour volumes are located: {os.getcwd()}/volumes")
+        else:
+            print(f'Chapters list length, {Chapter_list}, isn\'t the same as the list length for Volumes, {volumes}')
+            print('Please make sure you are not missing any chapters or volumes in your list')
+
+    else:
+        current_vol = 0
+        chapters = input('What chapter do you want to download? ')
+        start_chapter = int(chapters)
+        end_chapter = int(chapters)
+        manga = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
+        manga.vol_scrape()
 
 
 if __name__ == '__main__':
