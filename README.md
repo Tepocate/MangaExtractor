@@ -23,9 +23,6 @@ This will allow you to create a python virtual environment --three signifies the
 THe following dependencies will need to be downloaded:
 
 ```
-bs4==0.0.1
-  - beautifulsoup4 [required: Any, installed: 4.9.1]
-    - soupsieve [required: >1.2, installed: 2.0.1]
 pandas==1.0.5
   - numpy [required: >=1.13.3, installed: 1.18.5]
   - python-dateutil [required: >=2.6.1, installed: 2.8.1]
@@ -36,7 +33,6 @@ requests==2.24.0
   - chardet [required: <4,>=3.0.2, installed: 3.0.4]
   - idna [required: <3,>=2.5, installed: 2.9]
   - urllib3 [required: !=1.25.1,<1.26,>=1.21.1,!=1.25.0, installed: 1.25.9]
-xlrd==1.2.0
 ```
 
 There is a requirements.txt file in the repository that will make downloading the dependencies easier. To download follow the following command:
