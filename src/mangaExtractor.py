@@ -7,6 +7,7 @@ import re
 
 
 class web_scrape:
+    # Initilize everything
     def __init__(self, manga_name, url_manga_name, current_vol, start_chapter, end_chapter):
         self.manga_name = manga_name
         self.url_manga_name = url_manga_name
@@ -15,6 +16,7 @@ class web_scrape:
         self.end_chapter = end_chapter
         self.info = self.get_info(f'https://mangasee123.com/read-online/{self.url_manga_name}-chapter-{self.start_chapter}-page-1.html')
 
+    # Main scraper
     def vol_scrape(self):
         page_counter = 0
         index = 0
@@ -108,7 +110,6 @@ def get_directory(manga_title):
 
     manga_list = []
 
-    #reutrn this list with a question asking which number is the manga they wanted to extract
     for x in range(len(directory['Directory'])):
         manga_name = directory['Directory'][x]['s']
         y = re.search(f"(({manga_title}).*){{2}}", manga_name, flags=re.IGNORECASE)
