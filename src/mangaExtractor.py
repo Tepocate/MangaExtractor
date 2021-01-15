@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 import json
 import pandas as pd
 import os
@@ -36,7 +35,8 @@ class web_scrape:
                 else:
                     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{first_page:03d}.png"
                 self.save_page(first_page_url,page_counter)
-                print(f"Volume: {self.vol} Chapter: {current_chapter} Page {page_counter} extracted")
+                if self.vol == 0: print(f"Chapter: {current_chapter} Page {page_counter} extracted")
+                else: print(f"Volume: {self.vol} Chapter: {current_chapter} Page {page_counter} extracted")
                 first_page += 1
                 page_counter += 1
         self.archive()
@@ -47,7 +47,10 @@ class web_scrape:
         page = requests.get(png_url, headers=headers)
         
         try:
-            path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
+            if self.vol == 0:
+                path = f'{os.getcwd()}/chapters/{self.manga_name}/{self.manga_name} c{self.start_chapter}'
+            else:
+                path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name}v{self.vol:02d}'
             os.makedirs(path)
         except FileExistsError:
             pass
@@ -62,13 +65,13 @@ class web_scrape:
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
         page = requests.get(site, headers=headers)
 
-        soup = BeautifulSoup(page.content, 'html.parser')
+        html_text = page.content.decode("utf-8")
 
-        scripts = soup.find_all('script')
+        y = re.compile("vm.CurPathName = (.*?);")
+        png_path = y.findall(html_text)[0].split('"')[1]
 
-        json_chapter = json.loads(scripts[15].string.split('\r\n\t\t\t')[7].split(';')[0].split('=')[1])
-
-        png_path = scripts[15].string.split('\r\n\t\t\t')[6].split(';')[0].split('=')[1].strip().split('"')[1]
+        x = re.compile("vm.CHAPTERS = (.*?);")
+        json_chapter = json.loads(x.findall(html_text)[0])
 
         df = pd.DataFrame(json_chapter)
         df = df.drop(columns=['Directory','ChapterName','Date','Type'])
@@ -78,26 +81,54 @@ class web_scrape:
 
     # zip up to a cbr archive
     def archive(self):
-        print("Archiving files to cbr")
-        path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
+        print("Archiving files to cbr...")
+        if self.vol == 0:
+            path = f'{os.getcwd()}/chapters/{self.manga_name}/{self.manga_name} c{self.start_chapter}'
+        else:
+            path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
         shutil.make_archive(path, 'zip', path)
 
         os.rename(f'{path}.zip',f'{path}.cbr')
         print(f"cbr located {path}.cbr")
         shutil.rmtree(f'{path}')
 
+# pass through a manage name to search the directory and return a list of names that it could possibly be
+def get_directory(manga_title):
+    url = 'https://mangasee123.com/directory/'
+
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
+    page = requests.get(url, headers=headers)
+
+    html_text = page.content.decode("utf-8")
+
+    y = re.compile("vm.FullDirectory = (.*?)(.*);")
+    directory = json.loads(y.findall(html_text)[0][-1])
+
+    manga_title = manga_title.replace(' ', '|')
+
+    manga_list = []
+
+    #reutrn this list with a question asking which number is the manga they wanted to extract
+    for x in range(len(directory['Directory'])):
+        manga_name = directory['Directory'][x]['s']
+        y = re.search(f"(({manga_title}).*){{2}}", manga_name, flags=re.IGNORECASE)
+        if y is not None:
+            print(f"{x}: {directory['Directory'][x]['s']}")
+        
+    z = int(input("\nWhat number from the list is the anime you want to extract? "))
+
+    return directory['Directory'][z]['i']
+
 # Asking the questions to get the detials of what manga you are trying to extract
 def ask():
-    manga_name = input("What is the name of the excel sheet you have created that "\
-                        "contains the columns currentVol|startChapter|endChapter in "\
-                        "that order: ")# A valid response would be: My Hero Academia
-    
-    url_manga_name = input("What is the name with of the manga you want to download "\
-                            "form https://mangasee123.com/directory/ make sure you "\
-                            "include a - between every word: ") # A valid answer would be: Boku-No-Hero-Academia
+    manga_name = input("\nWhat is the name of the manga you want to extract: ")# A valid response would be: My Hero Academia
 
-    single_multiple = input('Will you be dowloand:\n(1)A single chapter\n(2)Mutliple volumes\nEnter 1 or 2: ')
-    if single_multiple == '2':
+    print("\n")
+    url_manga_name = get_directory(manga_name)
+
+
+    single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter(s)\n(2) volume(s)\nEnter 1 or 2: '))
+    if single_or_multiple == 2:
         volumes = input('What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8] : ')
         volumes_list = re.split('\[|\]|,',volumes)
         while ("" in volumes_list): volumes_list.remove("")
@@ -121,7 +152,7 @@ def ask():
 
             print(f"Finish Extracting.\nYour volumes are located: {os.getcwd()}/volumes")
         else:
-            print(f'Chapters list length, {Chapter_list}, isn\'t the same as the list length for Volumes, {volumes}')
+            print(f'Chapters list length, {len(Chapter_list)}, isn\'t the same as the list length for Volumes, {len(volumes_list)}')
             print('Please make sure you are not missing any chapters or volumes in your list')
 
     else:
