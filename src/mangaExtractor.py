@@ -37,8 +37,8 @@ class web_scrape:
                 else:
                     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{first_page:03d}.png"
                 self.save_page(first_page_url,page_counter)
-                if self.vol == 0: print(f"Chapter: {current_chapter} Page {page_counter} extracted")
-                else: print(f"Volume: {self.vol} Chapter: {current_chapter} Page {page_counter} extracted")
+                if self.vol == 0: print(f"\nChapter: {current_chapter:2.0f} Page {page_counter} extracted")
+                else: print(f"\nVolume: {self.vol} Chapter: {current_chapter:2.0f} Page {page_counter} extracted")
                 first_page += 1
                 page_counter += 1
         self.archive()
@@ -83,7 +83,7 @@ class web_scrape:
 
     # zip up to a cbr archive
     def archive(self):
-        print("Archiving files to cbr...")
+        print("\nArchiving files to cbr...")
         if self.vol == 0:
             path = f'{os.getcwd()}/chapters/{self.manga_name}/{self.manga_name} c{self.start_chapter}'
         else:
@@ -91,7 +91,7 @@ class web_scrape:
         shutil.make_archive(path, 'zip', path)
 
         os.rename(f'{path}.zip',f'{path}.cbr')
-        print(f"cbr located {path}.cbr")
+        print(f"\ncbr located {path}.cbr\n")
         shutil.rmtree(f'{path}')
 
 # pass through a manage name to search the directory and return a list of names that it could possibly be
@@ -118,24 +118,24 @@ def get_directory(manga_title):
         
     z = int(input("\nWhat number from the list is the anime you want to extract? "))
 
-    return directory['Directory'][z]['i']
+    return directory['Directory'][z]['i'], directory['Directory'][z]['s']
 
 # Asking the questions to get the detials of what manga you are trying to extract
 def ask():
     manga_name = input("\nWhat is the name of the manga you want to extract: ")# A valid response would be: My Hero Academia
 
     print("\n")
-    url_manga_name = get_directory(manga_name)
+    url_manga_name, f_manga_name = get_directory(manga_name)
 
 
-    single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter(s)\n(2) volume(s)\nEnter 1 or 2: '))
+    single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter\n(2) volume(s)\nEnter 1 or 2: '))
     if single_or_multiple == 2:
-        volumes = input('What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8] : ')
+        volumes = input('What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8]: ')
         volumes_list = re.split('\[|\]|,',volumes)
         while ("" in volumes_list): volumes_list.remove("")
         # OUTPUT: ['1', '2', '3', '4', '5', '6', '7', '8']
 
-        chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71] :')
+        chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71]:')
         Chapters_list = re.split('\[|\]|,',Chapters)
         while("" in Chapters_list): Chapters_list.remove("")
         # OUTPUT: ['1-7', '8-17', '18-26', '27-35', '36-44', '45-53', '54-62', '63-71']
@@ -146,7 +146,7 @@ def ask():
                 current_vol = volumes[i]
                 start_chapter = Chapters_list[i].split('-')[0]
                 end_chapter = Chapters_list[i].split('-')[1]
-                manga = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
+                manga = web_scrape(f_manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
                 manga.vol_scrape()
 
                 i += 1
@@ -158,10 +158,10 @@ def ask():
 
     else:
         current_vol = 0
-        chapters = input('What chapter do you want to download? ')
+        chapters = input('\nWhat chapter do you want to download? ')
         start_chapter = int(chapters)
         end_chapter = int(chapters)
-        manga = web_scrape(manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
+        manga = web_scrape(f_manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
         manga.vol_scrape()
 
 

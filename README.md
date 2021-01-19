@@ -72,29 +72,40 @@ pipenv shell # This allows you to open the virtual environment in that directory
 python mangaExtractor.py # Within the virtual environment run the script
 ```
 
-Once ran you will be asked 2 questions. The first question asks:
+Once ran you will be asked a question:
 
 ```
-What is the name of the excel sheet you have created that contains the columns currentVol|startChapter|endChapter in that order:
+What is the name of the manga you want to extract:
 ```
-
-You will need to create or add to an excel workbook. There is an example in the repository in case you don not know what is needed. You will then enter the sheet name for this question. Make sure you save this document in the same directory as the python script.
-
-The 2nd question states:
+After you input the name of the anime you want to extact the program will display a directoy of similar animes and will ask you:
 
 ```
-What is the name of the excel workbook file in {os.getcwd()}, include the file extension in the name:
+What number from the list is the anime you want to extract?
 ```
 
-This is basically asking for the file name you must include the file extension when entering the name "EXAMPLE.xlsx" for example.
-
-The 3rd and last question asked is:
+This will display a list manga that you can select from by inputing the number that coincides with the manga. Next you will be asked:
 
 ```
-What is the name with of the manga you want to download form https://mangasee123.com/directory/ make sure you include a - between every word:
+Will you be dowloand:
+(1) Chapter
+(2) volume(s)
+Enter 1 or 2:
 ```
 
-So basically you will have to get the name of the manage you want and enter it exactly how you see.
+If you select 1 then you be asked which chapter you would like to extact and it will extract that chapter ONLY. If number 2 is selected then you will be asked 2 more questions:
+
+```
+What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8]: 
+```
+
+This is where you would enter the list of volumes you would like to download. Then the program will ask:
+
+```
+What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71]:
+```
+
+Here you will have to enter for each volume in the list from the question before which chapters match to that volume. for example volume 1 would have chpters 1-7, volume 2 will have chapters 8-7, etc. Once this is selected the program will check the length of the list and see if they are equal if not then this means the lists are uneven, meaning for ever volume you want the matching chapters are missing. If everything is correct then the process of extracting the volumes will begin.
+
 
 ## Example
 
@@ -103,22 +114,56 @@ This is how the line of code will look like when you run everything in linux bas
 ```Bash
 tepocate:{~}$ cd projects/mangaExtractor/src/
 tepocate:{~/projects/mangaExtractor/src}$ pipenv run python mangaExtractor.py
-What is the name of the excel sheet you have created that contains the columns currentVol|startChapter|endChapter in that order: Onepunch Man
-What is the name of the excel workbook file in /home/tepocate/projects/mangaExtractor/src, include the file extension in the name: MangaVolumes.xlsx
-What is the name with of the manga you want to download form https://mangasee123.com/directory/ make sure you include a - between every word: Onepunch-Man
-Extracting volumes now
-Volume 1 page 0 extracted
-Volume 1 page 1 extracted
-Volume 1 page 2 extracted
-Volume 1 page 3 extracted
-Volume 1 page 4 extracted
-Volume 1 page 5 extracted
-Volume 1 page 6 extracted
-Volume 1 page 7 extracted
-Volume 1 page 8 extracted
-Volume 1 page 9 extracted
-Volume 1 page 10 extracted
-Volume 1 page 11 extracted
+
+What is the name of the manga you want to extract: my hero academia
+
+
+659: Boku no Hero Academia
+660: Boku no Hero Academia Smash!!
+2094: I Was Dismissed from the Heroâ€™s Party Because They Don't Need My Training Skills
+2097: I was Told to Relinquish My Fiance to My Little Sister
+2299: It's Not My Fault That My Friend's Not Popular
+3449: My Hero!
+3450: My Home Hero
+3454: My Lover Was Stolen, and I Was Kicked Out of the Hero's Party
+3455: My Mysterious Girlfriend X
+3465: Mysteries, Maidens, And Mysterious Disappearances
+5494: Vigilante: Boku no Hero Academia Illegals
+5570: When I Was Reincarnated in Another World, I Was a Heroine and He Was a Hero
+
+What number from the list is the anime you want to extract? 659
+
+Will you be dowloand:
+(1) Chapter
+(2) volume(s)
+Enter 1 or 2: 1
+
+What chapter do you want to download? 297
+
+Chapter: 297 Page 0 extracted
+Chapter: 297 Page 1 extracted
+Chapter: 297 Page 2 extracted
+Chapter: 297 Page 3 extracted
+Chapter: 297 Page 4 extracted
+Chapter: 297 Page 5 extracted
+Chapter: 297 Page 6 extracted
+Chapter: 297 Page 7 extracted
+Chapter: 297 Page 8 extracted
+Chapter: 297 Page 9 extracted
+Chapter: 297 Page 10 extracted
+Chapter: 297 Page 11 extracted
+Chapter: 297 Page 12 extracted
+Chapter: 297 Page 13 extracted
+Chapter: 297 Page 14 extracted
+Chapter: 297 Page 15 extracted
+Chapter: 297 Page 16 extracted
+Chapter: 297 Page 17 extracted
+Chapter: 297 Page 18 extracted
+
+Archiving files to cbr...
+
+cbr located /home/tepocate/projects/MangaExtractor/src/chapters/my hero academia/my hero academia c297.cbr
+
 ```
 
 This is how the line of code will look like when you run everything in windows PowerShell:
@@ -127,20 +172,52 @@ This is how the line of code will look like when you run everything in windows P
 PS A:\Shared Folder> cd ~
 PS C:\Users\Christian> cd 'A:\Shared Folder\src\'
 PS A:\Shared Folder\src> pipenv run python .\mangaExtractor.py
-What is the name of the excel sheet you have created that contains the columns currentVol|startChapter|endChapter in that order: My Hero Academia
-What is the name of the excel workbook file in A:\Shared Folder\src, include the file extension in the name: MangaVolumes.xlsx
-What is the name with of the manga you want to download form https://mangasee123.com/directory/ make sure you include a - between every word: Boku-No-Hero-Academia
-Extracting volumes now
-Volume 1 page 0 extracted
-Volume 1 page 1 extracted
-Volume 1 page 2 extracted
-Volume 1 page 3 extracted
-Volume 1 page 4 extracted
-Volume 1 page 5 extracted
-Volume 1 page 6 extracted
-Volume 1 page 7 extracted
-Volume 1 page 8 extracted
-Volume 1 page 9 extracted
-Volume 1 page 10 extracted
-Volume 1 page 11 extracted
-```
+
+What is the name of the manga you want to extract: my hero academia
+
+
+659: Boku no Hero Academia
+660: Boku no Hero Academia Smash!!
+2094: I Was Dismissed from the Heroâ€™s Party Because They Don't Need My Training Skills
+2097: I was Told to Relinquish My Fiance to My Little Sister
+2299: It's Not My Fault That My Friend's Not Popular
+3449: My Hero!
+3450: My Home Hero
+3454: My Lover Was Stolen, and I Was Kicked Out of the Hero's Party
+3455: My Mysterious Girlfriend X
+3465: Mysteries, Maidens, And Mysterious Disappearances
+5494: Vigilante: Boku no Hero Academia Illegals
+5570: When I Was Reincarnated in Another World, I Was a Heroine and He Was a Hero
+
+What number from the list is the anime you want to extract? 659
+
+Will you be dowloand:
+(1) Chapter
+(2) volume(s)
+Enter 1 or 2: 1
+
+What chapter do you want to download? 297
+
+Chapter: 297 Page 0 extracted
+Chapter: 297 Page 1 extracted
+Chapter: 297 Page 2 extracted
+Chapter: 297 Page 3 extracted
+Chapter: 297 Page 4 extracted
+Chapter: 297 Page 5 extracted
+Chapter: 297 Page 6 extracted
+Chapter: 297 Page 7 extracted
+Chapter: 297 Page 8 extracted
+Chapter: 297 Page 9 extracted
+Chapter: 297 Page 10 extracted
+Chapter: 297 Page 11 extracted
+Chapter: 297 Page 12 extracted
+Chapter: 297 Page 13 extracted
+Chapter: 297 Page 14 extracted
+Chapter: 297 Page 15 extracted
+Chapter: 297 Page 16 extracted
+Chapter: 297 Page 17 extracted
+Chapter: 297 Page 18 extracted
+
+Archiving files to cbr...
+
+cbr located /home/tepocate/projects/MangaExtractor/src/chapters/my hero academia/my hero academia c297.cbr
