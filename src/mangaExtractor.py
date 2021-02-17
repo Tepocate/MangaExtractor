@@ -124,9 +124,7 @@ def get_directory(manga_title):
 def ask():
     manga_name = input("\nWhat is the name of the manga you want to extract: ")# A valid response would be: My Hero Academia
 
-    print("\n")
     url_manga_name, f_manga_name = get_directory(manga_name)
-
 
     single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter\n(2) volume(s)\nEnter 1 or 2: '))
     if single_or_multiple == 2:
