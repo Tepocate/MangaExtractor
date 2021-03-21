@@ -20,19 +20,19 @@ pipenv --three
 
 This will allow you to create a python virtual environment --three signifies the version of python to use
 
-THe following dependencies will need to be downloaded:
+The following dependencies will need to be downloaded:
 
 ```
-pandas==1.0.5
-  - numpy [required: >=1.13.3, installed: 1.18.5]
-  - python-dateutil [required: >=2.6.1, installed: 2.8.1]
-    - six [required: >=1.5, installed: 1.15.0]
-  - pytz [required: >=2017.2, installed: 2020.1]
-requests==2.24.0
-  - certifi [required: >=2017.4.17, installed: 2020.4.5.2]
-  - chardet [required: <4,>=3.0.2, installed: 3.0.4]
-  - idna [required: <3,>=2.5, installed: 2.9]
-  - urllib3 [required: !=1.25.1,<1.26,>=1.21.1,!=1.25.0, installed: 1.25.9]
+certifi==2020.12.5
+chardet==4.0.0
+idna==2.10
+numpy==1.19.5
+pandas==1.2.0
+python-dateutil==2.8.1
+pytz==2020.5
+requests==2.25.1
+six==1.15.0
+urllib3==1.26.4
 ```
 
 There is a requirements.txt file in the repository that will make downloading the dependencies easier. To download follow the following command:
