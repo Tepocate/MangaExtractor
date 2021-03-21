@@ -43,13 +43,13 @@ pipenv install -r requirements.txt
 
 OR
 
-if you are in the same directory ad the pipenvFiles from the repo then you can just do the following command
+if you are in the same directory ad the pipenvFiles then you can just run the following command
 
 ```Bash
 pipenv install
 ```
 
-This will install all the dependencies you need from my pipfile.
+This will install all the dependencies you need from the pipfile.
 
 To learn more about pip you can visit these helpful links:
 
