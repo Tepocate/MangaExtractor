@@ -50,14 +50,14 @@ class web_scrape:
         
         try:
             if self.vol == 0:
-                path = f'{os.getcwd()}/chapters/{self.manga_name}/{self.manga_name} c{self.start_chapter}'
+                self.path = f'{os.getcwd()}/chapters/{self.manga_name}/{self.manga_name} c{self.start_chapter}'
             else:
-                path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name}v{self.vol:02d}'
-            os.makedirs(path)
+                self.path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
+            os.makedirs(self.path)
         except FileExistsError:
             pass
         
-        file = open(f"{path}/{self.manga_name} v{self.vol}-{page_counter:03d}.png","wb")
+        file = open(f"{self.path}/{self.manga_name} v{self.vol}-{page_counter:03d}.png","wb")
         file.write(page.content)
         
         file.close()
@@ -84,17 +84,13 @@ class web_scrape:
     # zip up to a cbr archive
     def archive(self):
         print("\nArchiving files to cbr...")
-        if self.vol == 0:
-            path = f'{os.getcwd()}/chapters/{self.manga_name}/{self.manga_name} c{self.start_chapter}'
-        else:
-            path = f'{os.getcwd()}/volumes/{self.manga_name}/{self.manga_name} v{self.vol:02d}'
-        shutil.make_archive(path, 'zip', path)
+        shutil.make_archive(self.path, 'zip', self.path)
 
-        os.rename(f'{path}.zip',f'{path}.cbr')
-        print(f"\ncbr located {path}.cbr\n")
-        shutil.rmtree(f'{path}')
+        os.rename(f'{self.path}.zip',f'{self.path}.cbr')
+        print(f"\ncbr located {self.path}.cbr\n")
+        shutil.rmtree(f'{self.path}')
 
-# pass through a manage name to search the directory and return a list of names that it could possibly be
+# Pass through a manage name to search the directory and return a list of names that it could possibly be
 def get_directory(manga_title):
     url = 'https://mangasee123.com/directory/'
 
@@ -126,24 +122,24 @@ def ask():
 
     url_manga_name, f_manga_name = get_directory(manga_name)
 
-    single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter\n(2) volume(s)\nEnter 1 or 2: '))
+    single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter(s)\n(2) volume(s)\nEnter 1 or 2: '))
     if single_or_multiple == 2:
         volumes = input('What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8]: ')
         volumes_list = re.split('\[|\]|,',volumes)
         while ("" in volumes_list): volumes_list.remove("")
         # OUTPUT: ['1', '2', '3', '4', '5', '6', '7', '8']
 
-        chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71]:')
-        Chapters_list = re.split('\[|\]|,',Chapters)
+        chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71]: ')
+        Chapters_list = re.split('\[|\]|,',chapters)
         while("" in Chapters_list): Chapters_list.remove("")
         # OUTPUT: ['1-7', '8-17', '18-26', '27-35', '36-44', '45-53', '54-62', '63-71']
 
         if len(Chapters_list) == len(volumes_list):
             i=0
             while i < len(volumes_list):
-                current_vol = volumes[i]
-                start_chapter = Chapters_list[i].split('-')[0]
-                end_chapter = Chapters_list[i].split('-')[1]
+                current_vol = int(volumes_list[i])
+                start_chapter = int(Chapters_list[i].split('-')[0])
+                end_chapter = int(Chapters_list[i].split('-')[1])
                 manga = web_scrape(f_manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
                 manga.vol_scrape()
 
@@ -153,15 +149,21 @@ def ask():
         else:
             print(f'Chapters list length, {len(Chapter_list)}, isn\'t the same as the list length for Volumes, {len(volumes_list)}')
             print('Please make sure you are not missing any chapters or volumes in your list')
-
     else:
-        current_vol = 0
-        chapters = input('\nWhat chapter do you want to download? ')
-        start_chapter = int(chapters)
-        end_chapter = int(chapters)
-        manga = web_scrape(f_manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
-        manga.vol_scrape()
-
+        singleCH_or_multipleCH = int(input('\nDo you want to dowloand:\n(1) A single chapter\n(2) Multiple chapters\nEnter 1 or 2: '))
+        if singleCH_or_multipleCH == 1:
+            current_vol = 0
+            chapters = input('\nWhat chapter do you want to download? ')
+            start_chapter = int(chapters)
+            end_chapter = int(chapters)
+            manga = web_scrape(f_manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
+            manga.vol_scrape()
+        else:
+            current_vol = 0
+            start_chapter = int(input("What's the first chapter you want to download? \n"))
+            end_chapter = int(input("What's the last chapter you want to download? \n"))
+            manga = web_scrape(f_manga_name, url_manga_name, current_vol, start_chapter, end_chapter)
+            manga.vol_scrape()
 
 if __name__ == '__main__':
     ask()
