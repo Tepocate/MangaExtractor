@@ -31,16 +31,22 @@ class web_scrape:
             first_page = 1
             last_page = chapter_df['Page'][i] # Last page for the current chapter i
             current_chapter = (chapter_df['Chapter'][i] - 100000)/10 # Does math to get the num of current chapter
+            
             while first_page <= last_page:
+                
                 if current_chapter.is_integer():
                     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:04.0f}-{first_page:03d}.png"
                 else:
                     first_page_url = f"https://{self.info[1]}/manga/{self.url_manga_name}/{current_chapter:06.1f}-{first_page:03d}.png"
+                
                 self.save_page(first_page_url,page_counter)
+               
                 if self.vol == 0: print(f"\nChapter: {current_chapter:2.0f} Page {page_counter} extracted")
                 else: print(f"\nVolume: {self.vol} Chapter: {current_chapter:2.0f} Page {page_counter} extracted")
+                
                 first_page += 1
                 page_counter += 1
+
         self.archive()
 
     # Save the pages into volume folder
@@ -99,7 +105,7 @@ def get_directory(manga_title):
 
     html_text = page.content.decode("utf-8")
 
-    y = re.compile("vm.FullDirectory = (.*?)(.*);")
+    y = re.compile("vm.FullDirectory = (.*?)(.*);")298
     directory = json.loads(y.findall(html_text)[0][-1])
 
     manga_title = manga_title.replace(' ', '|')
@@ -123,6 +129,7 @@ def ask():
     url_manga_name, f_manga_name = get_directory(manga_name)
 
     single_or_multiple = int(input('\nWill you be dowloand:\n(1) Chapter(s)\n(2) volume(s)\nEnter 1 or 2: '))
+    
     if single_or_multiple == 2:
         volumes = input('What are the volumes you wish to collect in a list? Ex: [1,2,3,4,5,6,7,8]: ')
         volumes_list = re.split('\[|\]|,',volumes)
@@ -149,8 +156,10 @@ def ask():
         else:
             print(f'Chapters list length, {len(Chapter_list)}, isn\'t the same as the list length for Volumes, {len(volumes_list)}')
             print('Please make sure you are not missing any chapters or volumes in your list')
+    
     else:
         singleCH_or_multipleCH = int(input('\nDo you want to dowloand:\n(1) A single chapter\n(2) Multiple chapters\nEnter 1 or 2: '))
+        
         if singleCH_or_multipleCH == 1:
             current_vol = 0
             chapters = input('\nWhat chapter do you want to download? ')
