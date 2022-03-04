@@ -1,0 +1,5 @@
+src/__pycache__
+src/chapters
+*.spec
+pipenvFiles/*
+manga_extractor_venv/*

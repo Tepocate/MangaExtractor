@@ -133,7 +133,7 @@ def ask():
         while ("" in volumes_list): volumes_list.remove("")
         # OUTPUT: ['1', '2', '3', '4', '5', '6', '7', '8']
 
-        chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71]:')
+        Chapters = input('What are the chapters in each volume listed? Ex: [1-7,8-17,18-26,27-35,36-44,45-53,54-62,63-71]:')
         Chapters_list = re.split('\[|\]|,',Chapters)
         while("" in Chapters_list): Chapters_list.remove("")
         # OUTPUT: ['1-7', '8-17', '18-26', '27-35', '36-44', '45-53', '54-62', '63-71']
