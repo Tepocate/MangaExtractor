@@ -27,6 +27,8 @@ class web_scrape:
 
         chapter_df = vol_df[vol_df['Chapter'].between(first_chapter,last_chapter)]
 
+        print('\n')
+
         for i in chapter_df.index:
             first_page = 1
             last_page = chapter_df['Page'][i] # Last page for the current chapter i

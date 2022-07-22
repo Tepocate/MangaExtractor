@@ -17,16 +17,16 @@ This will allow you to create a python virtual environment --three signifies the
 The following dependencies will need to be downloaded:
 
 ```
-certifi==2020.12.5
+certifi==2022.6.15
 chardet==4.0.0
 idna==2.10
-numpy==1.22.0
+numpy==1.23.1
 pandas==1.2.0
-python-dateutil==2.8.1
-pytz==2020.5
+python-dateutil==2.8.2
+pytz==2022.1
 requests==2.25.1
-six==1.15.0
-urllib3==1.26.5
+six==1.16.0
+urllib3==1.26.10
 ```
 
 There is a requirements.txt file in the repository that will make downloading the dependencies easier. To download run the following commands:
