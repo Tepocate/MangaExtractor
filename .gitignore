@@ -1,5 +1,5 @@
 **/__pycache__
 **/chapters
 *.spec
-pipenvFiles/*
-manga_extractor_venv/*
+*pipenvFiles
+*venv
